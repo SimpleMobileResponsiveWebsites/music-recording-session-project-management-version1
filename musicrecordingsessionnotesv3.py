@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-# Session Details (combine Artist, Genre, etc. into a single dictionary)
+# Session Details
 SESSION_DETAILS = {
     "Artist": "",
     "Genre": "",
@@ -27,12 +27,13 @@ st.title("Music Recording Session Management")
 st.header("Add a New Session")
 with st.form("session_form"):
     session_name = st.text_input("Session Name", "")
+    track_name = st.text_input("Track Name", "")  # Added Track Name input
     musicians = st.text_input("Musicians (comma-separated)", "")
     equipment = st.multiselect("Equipment/Instruments Used", INSTRUMENTS_TOOLS, [])
     session_status = st.selectbox("Status", ["Planned", "In Progress", "Completed"])
     session_date = st.date_input("Session Date", datetime.now())
-    bpm = st.number_input("BPM (Beats Per Minute)", min_value=1, step=1)  # Added BPM input
-    key = st.text_input("Key (e.g., C Major, A Minor)", "")  # Added Key input
+    bpm = st.number_input("BPM (Beats Per Minute)", min_value=1, step=1)
+    key = st.text_input("Key (e.g., C Major, A Minor)", "")
     session_notes = st.text_area("Notes", "")
 
     submitted = st.form_submit_button("Add Session")
@@ -40,28 +41,45 @@ with st.form("session_form"):
 if submitted and session_name:
     new_session = {
         "Session Name": session_name,
+        "Track Name": track_name,  # Added Track Name to the dictionary
         "Musicians": musicians,
         "Equipment": ", ".join(equipment),
         "Status": session_status,
         "Date": session_date,
-        "BPM": bpm,  # Added BPM to the new session
-        "Key": key,  # Added Key to the new session
+        "BPM": bpm,
+        "Key": key,
         "Notes": session_notes,
     }
-    # **Fixed Line (Initialize sessions if not in session_state):**
-    st.session_state.sessions = pd.DataFrame(columns=[
-        "Session Name", "Musicians", "Equipment", "Status", "Date", "BPM", "Key", "Notes"
-    ]) if "sessions" not in st.session_state else st.session_state.sessions
-    st.session_state.sessions = pd.concat([st.session_state.sessions, pd.DataFrame([new_session])], ignore_index=True)
+    
+    # Initialize sessions if not in session_state
+    if "sessions" not in st.session_state:
+        st.session_state.sessions = pd.DataFrame(columns=[
+            "Session Name", "Track Name", "Musicians", "Equipment", 
+            "Status", "Date", "BPM", "Key", "Notes"
+        ])
+    
+    st.session_state.sessions = pd.concat([st.session_state.sessions, 
+                                         pd.DataFrame([new_session])], 
+                                         ignore_index=True)
     st.success("Session added successfully!")
-
-# Removed the unused sidebar section
 
 # Display Sessions
 st.header("Session Overview")
 
-# Filter sessions based on the selected filter (assuming filter functionality remains)
-# ... (code for filtering remains the same)
+# Display the DataFrame if there are sessions
+if "sessions" in st.session_state and not st.session_state.sessions.empty:
+    st.dataframe(st.session_state.sessions)
+    
+    # Add download button for CSV
+    csv = st.session_state.sessions.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download Sessions as CSV",
+        data=csv,
+        file_name="recording_sessions.csv",
+        mime="text/csv"
+    )
+else:
+    st.info("No sessions recorded yet. Add a new session above.")
 
 # Notes Section
 st.header("Session Notes")
