@@ -30,7 +30,8 @@ for detail, value in SESSION_DETAILS.items():
 
 # Session Status Filter
 session_filter = st.sidebar.selectbox("Session Status Filter", [
-    "All", "Planned", "In Progress", "Completed"])
+    "All", "Planned", "In Progress", "Completed"
+])
 
 st.sidebar.write("---")
 st.sidebar.header("Quick Actions")
@@ -81,8 +82,7 @@ else:
 
 # Notes Section
 st.header("Session Notes")
-session_notes = st.text_area("Document session ideas, lyrics, or
-settings here.", "")
+session_notes = st.text_area("Document session ideas, lyrics, or settings here.", "")
 if st.button("Save Notes"):
     with open("session_notes.txt", "a") as f:
         f.write(f"\n[{datetime.now()}]\n{session_notes}\n")
