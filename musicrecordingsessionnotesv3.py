@@ -48,16 +48,14 @@ if submitted and session_name:
         "Key": key,  # Added Key to the new session
         "Notes": session_notes,
     }
+    # **Fixed Line (Initialize sessions if not in session_state):**
+    st.session_state.sessions = pd.DataFrame(columns=[
+        "Session Name", "Musicians", "Equipment", "Status", "Date", "BPM", "Key", "Notes"
+    ]) if "sessions" not in st.session_state else st.session_state.sessions
     st.session_state.sessions = pd.concat([st.session_state.sessions, pd.DataFrame([new_session])], ignore_index=True)
     st.success("Session added successfully!")
 
 # Removed the unused sidebar section
-
-# State Initialization (moved to maintain functionality)
-if "sessions" not in st.session_state or reset_data:
-    st.session_state.sessions = pd.DataFrame(columns=[
-        "Session Name", "Musicians", "Equipment", "Status", "Date", "BPM", "Key", "Notes"
-    ])
 
 # Display Sessions
 st.header("Session Overview")
