@@ -37,7 +37,7 @@ with st.form("session_form"):
     
     # Notes section moved inside the form
     st.subheader("Session Notes")
-    current_notes = st.text_area("Document session ideas, lyrics, or settings here:", "", key="current_notes")
+    current_notes = st.text_area("Document session ideas, lyrics, or settings here:", "")
     
     submitted = st.form_submit_button("Add Session")
 
@@ -74,8 +74,7 @@ if submitted and session_name:
     
     st.success("Session and notes added successfully!")
     
-    # Clear the notes area after submission
-    st.session_state.current_notes = ""
+    # Form will automatically reset on next rerun
 
 # Display Sessions
 st.header("Session Overview")
