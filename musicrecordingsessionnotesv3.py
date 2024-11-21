@@ -23,10 +23,6 @@ st.set_page_config(page_title="Music Recording Session Management", layout="wide
 # Main Page
 st.title("Music Recording Session Management")
 
-# Notes Section (Moved to top)
-st.header("Session Notes")
-current_notes = st.text_area("Document session ideas, lyrics, or settings here:", "", key="current_notes")
-
 # Add a new session
 st.header("Add a New Session")
 with st.form("session_form"):
@@ -39,7 +35,10 @@ with st.form("session_form"):
     bpm = st.number_input("BPM (Beats Per Minute)", min_value=1, step=1)
     key = st.text_input("Key (e.g., C Major, A Minor)", "")
     
-    # Add current notes to the form submission
+    # Notes section moved inside the form
+    st.subheader("Session Notes")
+    current_notes = st.text_area("Document session ideas, lyrics, or settings here:", "", key="current_notes")
+    
     submitted = st.form_submit_button("Add Session")
 
 if submitted and session_name:
@@ -52,7 +51,7 @@ if submitted and session_name:
         "Date": session_date,
         "BPM": bpm,
         "Key": key,
-        "Notes": current_notes,  # Use the notes from the text area
+        "Notes": current_notes,
     }
     
     # Initialize sessions if not in session_state
